@@ -17,8 +17,6 @@ public class Jogo {
 
     private static final int QTD_MINIMA_JOGADAS = 2;
     private static final int QTD_MAXIMA_JOGADAS = 5;
-    private static final String RESULTADO_EMPATE = "EMPATE!";
-    private static final String RESULTADO_VITORIA = "VITÓRIA!";
 
     private List<State> partidas;
     private List<Jogador> jogadores;
@@ -94,51 +92,11 @@ public class Jogo {
        return partida;
     }
 
-    private State aplicarRegraParaDoisJogadores(State partida){
-        if(verificarSeTodasAsJogadasSaoIguais()){                
-            aplicarEmpate(partida); 
-        }else{
-            aplicarVitoria(partida); 
-        }
-        return partida;
-    }
-
-    private State aplicarRegraParaMaisDeDoisJogadores(State partida){
-        if(verificarSeTodasAsJogadasSaoIguais() || verificarSeTodasAsJogadasSaoDiferentes()){
-            aplicarEmpate(partida); 
-        }else{
-            aplicarVitoria(partida); 
-        }
-        return partida;
-    }
-
-    private State aplicarVitoria(State partida){
-        partida.setResultado(RESULTADO_VITORIA);
-        return partida;
-    }
-
-    private State aplicarEmpate(State partida){
-        partida.setVencedor(null); 
-        partida.setResultado(RESULTADO_EMPATE);
-        return partida;
-    }
 
     private boolean verificarSeTodasAsJogadasSaoDiferentes(){
         long qtdJogadas = partidaAtual.getJogadas().size();
         long qtdJogadasDiferentes = partidaAtual.getJogadas().stream().map(j -> j.getTipo()).distinct().count();
         return qtdJogadas == qtdJogadasDiferentes && qtdJogadasDiferentes == QTD_MAXIMA_JOGADAS;
-    }
-
-    private boolean verificarSeHaDuasJogadasNaPartida(){
-        return partidaAtual.getJogadas().size() == 2;
-    }
-
-    private boolean verificarSeTodasAsJogadasSaoIguais(){
-        return partidaAtual.getJogadas().stream().map(j -> j.getTipo()).distinct().count() == 1L;
-    }
-
-    private boolean verificarSeHaMaisDeTresJogadas(){
-        return partidaAtual.getJogadas().size() >= 3;
     }
 
     private void verificarQuantidadeMinimaDeJogadas() throws BusinessException {
