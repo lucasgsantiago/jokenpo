@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.avaliacao.jokenpo.domain.partida.Partida;
 import com.avaliacao.jokenpo.domain.partida.State;
 import com.avaliacao.jokenpo.helpers.BusinessException;
+import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -38,40 +39,40 @@ public class Jogo {
         return jogador.getId();
     }
 
-    public void lancarJogadaPapel(String jogadorId) throws BusinessException {
+    public void lancarJogadaPapel(String jogadorId) throws BusinessException,ResourceNotFoundException {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         verificarSeJogadorJaJogouNaPartida(jogador);
         this.partidaAtual = partidaAtual.jogarPapel(jogador);
     }
 
-    public void lancarJogadaPedra(String jogadorId) throws BusinessException {
+    public void lancarJogadaPedra(String jogadorId) throws BusinessException,ResourceNotFoundException {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         verificarSeJogadorJaJogouNaPartida(jogador);
         this.partidaAtual = partidaAtual.jogarPedra(jogador);
     }
 
-    public void lancarJogadaTesoura(String jogadorId) throws BusinessException {
+    public void lancarJogadaTesoura(String jogadorId) throws BusinessException,ResourceNotFoundException {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         verificarSeJogadorJaJogouNaPartida(jogador);
         this.partidaAtual = partidaAtual.jogarTesoura(jogador);
     }
 
-    public void lancarJogadaSpock(String jogadorId) throws BusinessException {
+    public void lancarJogadaSpock(String jogadorId) throws BusinessException,ResourceNotFoundException {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         verificarSeJogadorJaJogouNaPartida(jogador);
         this.partidaAtual = partidaAtual.jogarSpock(jogador);
     }
 
-    public void lancarJogadaLagarto(String jogadorId) throws BusinessException {
+    public void lancarJogadaLagarto(String jogadorId) throws BusinessException,ResourceNotFoundException {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         verificarSeJogadorJaJogouNaPartida(jogador);
         this.partidaAtual = partidaAtual.jogarLagarto(jogador);
     }
 
-    private Jogador verificarSeExisteJogador(String jogadorId) throws BusinessException {
+    private Jogador verificarSeExisteJogador(String jogadorId) throws ResourceNotFoundException {
         Optional<Jogador> chkJogador = this.jogadores.stream().filter(j -> j.getId().equals(jogadorId)).findFirst();
         if(!chkJogador.isPresent()){
-            throw new BusinessException("Não há nenhum jogador com o Id informado.");
+            throw new ResourceNotFoundException("Não há nenhum jogador com o Id informado.");
         }
 
         Jogador jogador = chkJogador.get();
@@ -105,18 +106,18 @@ public class Jogo {
         }
     }
     
-	public void removerJogada(String jogadorId) throws BusinessException {
+	public void removerJogada(String jogadorId) throws ResourceNotFoundException  {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         this.partidaAtual.getJogadas().removeIf(j -> j.getJogador().equals(jogador));
 	}
 
-	public void removerJogador(String jogadorId) throws BusinessException {
+	public void removerJogador(String jogadorId) throws ResourceNotFoundException {
         Jogador jogador = verificarSeExisteJogador(jogadorId);
         this.partidaAtual.getJogadas().removeIf(j -> j.getJogador().equals(jogador));
         this.jogadores.remove(jogador);
 	}
 
-	public Jogador obterJogador(String jogadorId) throws BusinessException {
+	public Jogador obterJogador(String jogadorId) throws ResourceNotFoundException {
 		return verificarSeExisteJogador(jogadorId);
 	}
 

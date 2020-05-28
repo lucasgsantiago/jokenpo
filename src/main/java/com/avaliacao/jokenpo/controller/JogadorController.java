@@ -2,6 +2,7 @@ package com.avaliacao.jokenpo.controller;
 
 import com.avaliacao.jokenpo.command.jogador.AdicinarJogadorCommand;
 import com.avaliacao.jokenpo.helpers.BusinessException;
+import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
 import com.avaliacao.jokenpo.helpers.Success;
 import com.avaliacao.jokenpo.queries.jogador.JogadorListResult;
 import com.avaliacao.jokenpo.queries.jogador.JogadorResult;
@@ -25,12 +26,13 @@ public class JogadorController {
     private JogadorService service;
 
     @GetMapping
-    public ResponseEntity<JogadorListResult> listar() {        
+    public ResponseEntity<JogadorListResult> listar() {
         return ResponseEntity.ok(service.listarJogadores());
     }
 
     @GetMapping("/{jogadorId}")
-    public ResponseEntity<JogadorResult> obter(@PathVariable("jogadorId") String jogadorId) throws BusinessException {
+    public ResponseEntity<JogadorResult> obter(@PathVariable("jogadorId") String jogadorId)
+            throws ResourceNotFoundException {
         return ResponseEntity.ok(service.obterJogador(jogadorId));
     }
 
@@ -41,7 +43,7 @@ public class JogadorController {
     }
 
     @DeleteMapping("/{jogadorId}")
-    public ResponseEntity removerJogada(@PathVariable("jogadorId") String jogadorId) throws BusinessException {
+    public ResponseEntity removerJogada(@PathVariable("jogadorId") String jogadorId) throws ResourceNotFoundException {
         service.removerJogador(jogadorId);
         return ResponseEntity.ok().build();
     }

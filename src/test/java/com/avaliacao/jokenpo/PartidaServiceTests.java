@@ -10,6 +10,7 @@ import java.util.List;
 import com.avaliacao.jokenpo.command.jogador.AdicinarJogadorCommand;
 import com.avaliacao.jokenpo.domain.partida.State;
 import com.avaliacao.jokenpo.helpers.BusinessException;
+import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
 import com.avaliacao.jokenpo.queries.partida.PartidaResult;
 import com.avaliacao.jokenpo.service.JogadorService;
 import com.avaliacao.jokenpo.service.PartidaService;
@@ -24,13 +25,12 @@ class PartidaServiceTests {
 
     @Autowired
     JogadorService jogadorService;
-    
+
     @Autowired
     PartidaService partidaService;
 
     List<String> jogadores = new ArrayList<>();
 
-    
     @BeforeEach
     public void setUp() {
         jogadores = new ArrayList<>();
@@ -46,17 +46,17 @@ class PartidaServiceTests {
 
     @Test
     void adicionarJogadaSucessTest() {
-                
+
         try {
             partidaService.lancarJogadaPedra(jogadores.get(0));
             partidaService.lancarJogadaTesoura(jogadores.get(1));
             partidaService.lancarJogadaTesoura(jogadores.get(2));
-            
+
             PartidaResult result = partidaService.jogar();
 
             assertTrue(result.getResultado().equals(State.RESULTADO_VITORIA));
             assertTrue(result.getVencedor().getId().equals(jogadores.get(0)));
-        } catch (BusinessException e) {
+        } catch (BusinessException | ResourceNotFoundException e) {
             fail();
         }
 

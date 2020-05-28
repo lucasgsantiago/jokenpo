@@ -8,6 +8,7 @@ import com.avaliacao.jokenpo.converter.JogadorConverter;
 import com.avaliacao.jokenpo.domain.Jogador;
 import com.avaliacao.jokenpo.domain.Jogo;
 import com.avaliacao.jokenpo.helpers.BusinessException;
+import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
 import com.avaliacao.jokenpo.queries.jogador.JogadorListResult;
 import com.avaliacao.jokenpo.queries.jogador.JogadorResult;
 
@@ -26,13 +27,13 @@ public class JogadorService {
         }
 
         return jogo.adicionarJogador(command.getNome());
-    }    
+    }
 
-    public JogadorListResult listarJogadores(){
+    public JogadorListResult listarJogadores() {
 
         List<Jogador> jogadores = jogo.getJogadores();
-        
-        if(jogadores.isEmpty()){
+
+        if (jogadores.isEmpty()) {
             return new JogadorListResult();
         }
 
@@ -43,12 +44,12 @@ public class JogadorService {
         return new JogadorListResult(jogadoresResult);
 
     }
-   
-	public void removerJogador(String jogadorId) throws BusinessException {
+
+    public void removerJogador(String jogadorId) throws ResourceNotFoundException {
         jogo.removerJogador(jogadorId);
 	}
 
-	public JogadorResult obterJogador(String jogadorId) throws BusinessException {
+	public JogadorResult obterJogador(String jogadorId) throws ResourceNotFoundException {
         return JogadorConverter.converter(jogo.obterJogador(jogadorId));
 	}
 }
