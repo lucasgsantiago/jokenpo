@@ -1,14 +1,14 @@
 package com.avaliacao.jokenpo.controller;
 
+import com.avaliacao.jokenpo.application.commandService.JogadorCommandService;
+import com.avaliacao.jokenpo.application.queryService.JogadorQueryService;
 import com.avaliacao.jokenpo.command.jogador.AdicinarJogadorCommand;
 import com.avaliacao.jokenpo.helpers.BusinessException;
 import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
 import com.avaliacao.jokenpo.helpers.Success;
 import com.avaliacao.jokenpo.queries.jogador.JogadorListResult;
 import com.avaliacao.jokenpo.queries.jogador.JogadorResult;
-import com.avaliacao.jokenpo.service.JogadorService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,34 +22,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/jogadores")
 public class JogadorController {
 
-    private JogadorService service;
-    
-    public JogadorController(JogadorService service) {
-        this.service = service;
+    private JogadorCommandService commandService;
+    private JogadorQueryService queryService;
+   
+    public JogadorController(JogadorCommandService commandService,JogadorQueryService queryService) {
+        this.commandService = commandService;
+        this.queryService = queryService;
     }
 
     @GetMapping
     public ResponseEntity<JogadorListResult> listar() {
-        return ResponseEntity.ok(service.listarJogadores());
+        return ResponseEntity.ok(queryService.listarJogadores());
     }
 
-    @GetMapping("/{jogadorId}")
-    public ResponseEntity<JogadorResult> obter(@PathVariable("jogadorId") String jogadorId)
+    @GetMapping("/{id}")
+    public ResponseEntity<JogadorResult> obter(@PathVariable("id") String id)
             throws ResourceNotFoundException {
-        return ResponseEntity.ok(service.obterJogador(jogadorId));
+        return ResponseEntity.ok(queryService.obterJogador(id));
     }
 
     @PostMapping
     public ResponseEntity adicionarJogador(@RequestBody AdicinarJogadorCommand command) throws BusinessException {
-        String correlationId = service.adicionarJogador(command);
+        String correlationId = commandService.adicionarJogador(command);
         return ResponseEntity.ok(new Success(correlationId));
     }
 
-    @DeleteMapping("/{jogadorId}")
-    public ResponseEntity removerJogada(@PathVariable("jogadorId") String jogadorId) throws ResourceNotFoundException {
-        service.removerJogador(jogadorId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity removerJogada(@PathVariable("id") String id) throws ResourceNotFoundException {
+        commandService.removerJogador(id);
         return ResponseEntity.ok().build();
     }
-
 
 }

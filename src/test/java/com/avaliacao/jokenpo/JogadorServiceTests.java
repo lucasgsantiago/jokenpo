@@ -8,19 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.avaliacao.jokenpo.application.commandService.JogadorCommandService;
+import com.avaliacao.jokenpo.application.commandService.PartidaCommandService;
 import com.avaliacao.jokenpo.application.queryService.JogadorQueryService;
 import com.avaliacao.jokenpo.command.jogador.AdicinarJogadorCommand;
 import com.avaliacao.jokenpo.helpers.BusinessException;
 import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
-import com.avaliacao.jokenpo.service.PartidaService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class JogadorServiceTests {
 
@@ -31,7 +34,7 @@ class JogadorServiceTests {
     JogadorQueryService queryService;
 
     @Autowired
-    PartidaService partidaService;
+    PartidaCommandService partidaCommandService;
     
     List<String> jogadores = new ArrayList<>();
 
@@ -45,7 +48,7 @@ class JogadorServiceTests {
 
     @AfterEach
     public void tearDown(){
-        partidaService.resetarJogo();
+        partidaCommandService.resetarJogo();
     }
 
     @Test
@@ -72,7 +75,6 @@ class JogadorServiceTests {
     @DisplayName("Adicionar Jogador com nome nulo")
     void adicionarJogadorErrorNomeNullTest() {
         AdicinarJogadorCommand command = new AdicinarJogadorCommand(null);
-
         try {
             commandService.adicionarJogador(command);
             fail();
@@ -82,7 +84,7 @@ class JogadorServiceTests {
     }
 
     @Test
-    @DisplayName("Rmover Jogador")
+    @DisplayName("Remover Jogador")
     void removerJogadorSuccessTest() throws ResourceNotFoundException {
         commandService.removerJogador(jogadores.get(0));
         assertTrue(queryService.listarJogadores().getJogadores().size() == 2);

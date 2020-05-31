@@ -98,6 +98,9 @@ public class Jogo {
         if(verificarSeTodasAsJogadasSaoDiferentes()){
             this.partidaAtual.empatar();
         }
+        if(verificarSeQtdJogadasMaiorQueDoisDiferentes()){
+            this.partidaAtual.empatar();
+        }
        
     }
 
@@ -111,7 +114,7 @@ public class Jogo {
     private boolean verificarSeQtdJogadasMaiorQueDoisDiferentes(){
         long qtdJogadas = partidaAtual.getJogadas().size();
         long qtdJogadasDiferentes = partidaAtual.getJogadas().stream().map(j -> j.getTipo()).distinct().count();
-        return qtdJogadas > QTD_MINIMA_JOGADAS && qtdJogadasDiferentes == qtdJogadasDiferentes;
+        return qtdJogadas > QTD_MINIMA_JOGADAS && qtdJogadas == qtdJogadasDiferentes;
     }
 
     private void verificarQuantidadeMinimaDeJogadas() throws BusinessException {

@@ -1,8 +1,9 @@
 package com.avaliacao.jokenpo.controller;
 
+import com.avaliacao.jokenpo.application.commandService.PartidaCommandService;
+import com.avaliacao.jokenpo.application.queryService.PartidaQueryService;
 import com.avaliacao.jokenpo.helpers.BusinessException;
 import com.avaliacao.jokenpo.queries.partida.PartidaResult;
-import com.avaliacao.jokenpo.service.PartidaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,25 +16,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/partidas")
 public class PartidaController {
 
-    private PartidaService service;
+    private PartidaCommandService commandService;
+    private PartidaQueryService queryService;
 
-    public PartidaController(PartidaService service) {
-        this.service = service;
+    public PartidaController(PartidaCommandService commandService,PartidaQueryService queryService) {
+        this.commandService = commandService;
+        this.queryService = queryService;
     }
 
     @GetMapping("/atual")
     public ResponseEntity<PartidaResult> obterPartidaAtual() {
-        return ResponseEntity.ok(service.obterPartidaAtual());
+        return ResponseEntity.ok(queryService.obterPartidaAtual());
     }
     
     @PostMapping("/jogar")
     public ResponseEntity<PartidaResult> jogar() throws BusinessException {
-        return ResponseEntity.ok(service.jogar());
+        return ResponseEntity.ok(commandService.jogar());
     }
     
     @PostMapping("/resetar")
     public ResponseEntity resetar() {
-        service.resetarJogo();
+        commandService.resetarJogo();
         return ResponseEntity.ok().build();
     }
 
