@@ -86,18 +86,32 @@ public class Jogo {
     }
 
     public State jogar() throws BusinessException {
-        verificarQuantidadeMinimaDeJogadas();
+        fazerVerificacoes();
         State partida = this.partidaAtual.finalizar();
         this.partidas.add(partida);
         reiniciarPartida();
        return partida;
     }
 
+    private void fazerVerificacoes() throws BusinessException {
+        verificarQuantidadeMinimaDeJogadas();
+        if(verificarSeTodasAsJogadasSaoDiferentes()){
+            this.partidaAtual.empatar();
+        }
+       
+    }
 
     private boolean verificarSeTodasAsJogadasSaoDiferentes(){
         long qtdJogadas = partidaAtual.getJogadas().size();
         long qtdJogadasDiferentes = partidaAtual.getJogadas().stream().map(j -> j.getTipo()).distinct().count();
         return qtdJogadas == qtdJogadasDiferentes && qtdJogadasDiferentes == QTD_MAXIMA_JOGADAS;
+    }
+
+
+    private boolean verificarSeQtdJogadasMaiorQueDoisDiferentes(){
+        long qtdJogadas = partidaAtual.getJogadas().size();
+        long qtdJogadasDiferentes = partidaAtual.getJogadas().stream().map(j -> j.getTipo()).distinct().count();
+        return qtdJogadas > QTD_MINIMA_JOGADAS && qtdJogadasDiferentes == qtdJogadasDiferentes;
     }
 
     private void verificarQuantidadeMinimaDeJogadas() throws BusinessException {
@@ -123,6 +137,12 @@ public class Jogo {
 
     public void reiniciarPartida() {
         this.partidaAtual = new Partida();
+    }
+    
+    public void resetarJogo() {
+        partidas = new ArrayList<>();
+        jogadores = new ArrayList<>();
+        partidaAtual = new Partida();
     }
 
     public State getPartidaAtual() {

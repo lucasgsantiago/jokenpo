@@ -1,4 +1,4 @@
-package com.avaliacao.jokenpo.service;
+package com.avaliacao.jokenpo.application.queryService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,30 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PartidaService {
+public class PartidaQueryService {
 
     @Autowired
     private Jogo jogo;
-
-    public void lancarJogadaPapel(String jogadorId) throws BusinessException, ResourceNotFoundException {
-        jogo.lancarJogadaPapel(jogadorId);
-    }
-    
-    public void lancarJogadaPedra(String jogadorId) throws BusinessException, ResourceNotFoundException {
-        jogo.lancarJogadaPedra(jogadorId);
-    }
-    
-    public void lancarJogadaTesoura(String jogadorId) throws BusinessException, ResourceNotFoundException {
-        jogo.lancarJogadaTesoura(jogadorId);
-    }
-    
-    public void lancarJogadaSpock(String jogadorId) throws BusinessException, ResourceNotFoundException {
-        jogo.lancarJogadaSpock(jogadorId);
-    }
-    
-    public void lancarJogadaLagarto(String jogadorId) throws BusinessException, ResourceNotFoundException {
-        jogo.lancarJogadaLagarto(jogadorId);
-    }
 
     public List<JogadaResult> listarJogadasDaPartidaAtual(){
         List<JogadaResult> jogadas = new ArrayList<>();
@@ -63,17 +43,4 @@ public class PartidaService {
         return partidaAtualRestul;
     }
 
-    public PartidaResult jogar() throws BusinessException {
-        State partidaAtual = jogo.jogar();
-        PartidaResult partidaResult = PartidaConverter.converter(partidaAtual);
-        return partidaResult;
-    }
-
-	public void removerJogada(String jogadorId) throws ResourceNotFoundException {
-        jogo.removerJogada(jogadorId);
-	}
-
-    public void resetarJogo(){
-        jogo.resetarJogo();
-    }
 }

@@ -55,6 +55,11 @@ public class State {
         return this;
     }
 
+    public void empatar(){
+        this.resultado = RESULTADO_EMPATE;
+        this.vencedor = null;
+    }
+
     public List<Jogada> getJogadas() {
         return jogadas;
     }

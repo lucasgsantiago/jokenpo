@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/partida")
+@RequestMapping("api/v1/partidas")
 public class PartidaController {
 
-    @Autowired
     private PartidaService service;
+
+    public PartidaController(PartidaService service) {
+        this.service = service;
+    }
 
     @GetMapping("/atual")
     public ResponseEntity<PartidaResult> obterPartidaAtual() {
@@ -26,6 +29,12 @@ public class PartidaController {
     @PostMapping("/jogar")
     public ResponseEntity<PartidaResult> jogar() throws BusinessException {
         return ResponseEntity.ok(service.jogar());
+    }
+    
+    @PostMapping("/resetar")
+    public ResponseEntity resetar() {
+        service.resetarJogo();
+        return ResponseEntity.ok().build();
     }
 
 }

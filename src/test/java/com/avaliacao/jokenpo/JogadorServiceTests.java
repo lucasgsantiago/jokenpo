@@ -4,10 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.avaliacao.jokenpo.application.commandService.JogadorCommandService;
+import com.avaliacao.jokenpo.application.queryService.JogadorQueryService;
 import com.avaliacao.jokenpo.command.jogador.AdicinarJogadorCommand;
 import com.avaliacao.jokenpo.helpers.BusinessException;
-import com.avaliacao.jokenpo.service.JogadorService;
+import com.avaliacao.jokenpo.helpers.ResourceNotFoundException;
+import com.avaliacao.jokenpo.service.PartidaService;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,61 +25,67 @@ import org.springframework.boot.test.context.SpringBootTest;
 class JogadorServiceTests {
 
     @Autowired
-    JogadorService jogadorService;
+    JogadorCommandService commandService;
 
-    @Test
-    void contextLoads() {
+    @Autowired
+    JogadorQueryService queryService;
+
+    @Autowired
+    PartidaService partidaService;
+    
+    List<String> jogadores = new ArrayList<>();
+
+    @BeforeEach
+    public void setUp() throws BusinessException {
+        jogadores = new ArrayList<>();
+        jogadores.add(commandService.adicionarJogador(new AdicinarJogadorCommand("Jogador 1")));
+        jogadores.add(commandService.adicionarJogador(new AdicinarJogadorCommand("Jogador 2")));
+        jogadores.add(commandService.adicionarJogador(new AdicinarJogadorCommand("Jogador 3")));
+    }
+
+    @AfterEach
+    public void tearDown(){
+        partidaService.resetarJogo();
     }
 
     @Test
-    void adicionarJogadorSucessTest() {
+    @DisplayName("Adicionar Jogador")
+    void adicionarJogadorSucessTest() throws BusinessException {
         AdicinarJogadorCommand command = new AdicinarJogadorCommand("Jogador Teste");
-
-        try {
-            assertNotNull(jogadorService.adicionarJogador(command));
-        } catch (BusinessException e) {
-            fail();
-        }
-
+        assertNotNull(commandService.adicionarJogador(command));
+        assertTrue(queryService.listarJogadores().getJogadores().size() == 4);
     }
 
     @Test
-    void adicionarJogadorErrorVazioTest() {
+    @DisplayName("Adicionar Jogador com nome vazio")
+    void adicionarJogadorErrorNomeVazioTest() {
         AdicinarJogadorCommand command = new AdicinarJogadorCommand("");
-
         try {
-            jogadorService.adicionarJogador(command);
+            commandService.adicionarJogador(command);
             fail();
         } catch (BusinessException ex) {
 			assertTrue(ex.getMessage().contains("O nome não pode ser nulo ou vazio!"));
         }
-
     }
 
-    @Test
-    void adicionarJogadorErrorNullTest() {
+    @Test()
+    @DisplayName("Adicionar Jogador com nome nulo")
+    void adicionarJogadorErrorNomeNullTest() {
         AdicinarJogadorCommand command = new AdicinarJogadorCommand(null);
 
         try {
-            jogadorService.adicionarJogador(command);
+            commandService.adicionarJogador(command);
             fail();
         } catch (BusinessException ex) {
 			assertTrue(ex.getMessage().contains("O nome não pode ser nulo ou vazio!"));
         }
-
     }
 
     @Test
-    void removerJogadorSuccessTest() {
-        AdicinarJogadorCommand command = new AdicinarJogadorCommand(null);
-
-        try {
-            jogadorService.adicionarJogador(command);
-            fail();
-        } catch (BusinessException ex) {
-			assertTrue(ex.getMessage().contains("O nome não pode ser nulo ou vazio!"));
-        }
-
+    @DisplayName("Rmover Jogador")
+    void removerJogadorSuccessTest() throws ResourceNotFoundException {
+        commandService.removerJogador(jogadores.get(0));
+        assertTrue(queryService.listarJogadores().getJogadores().size() == 2);
     }
 
 }

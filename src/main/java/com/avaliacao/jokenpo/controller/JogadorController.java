@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/jogador")
+@RequestMapping("api/v1/jogadores")
 public class JogadorController {
 
-    @Autowired
     private JogadorService service;
+    
+    public JogadorController(JogadorService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<JogadorListResult> listar() {
@@ -47,5 +50,6 @@ public class JogadorController {
         service.removerJogador(jogadorId);
         return ResponseEntity.ok().build();
     }
+
 
 }
